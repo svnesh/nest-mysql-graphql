@@ -40,5 +40,4 @@ export class CustomerModel {
   @Column()
   @UpdateDateColumn()
   updated_at: Date;
-
 }

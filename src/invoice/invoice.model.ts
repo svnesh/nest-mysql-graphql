@@ -71,12 +71,10 @@ export class InvoiceModel {
 
   @Field(type => [Item])
   @Column({
-    type: 'jsonb',
-    array: false,
-    default: [],
-    nullable: false
+    type: 'simple-array',
+    nullable: false,
   })
-  items: Item[]
+  items: Item[];
 
   @Column()
   @Field()
@@ -86,7 +84,7 @@ export class InvoiceModel {
   @Field()
   subTotal: number;
 
-  @Column()
+  @Column({length: 200})
   @Field()
   total: string;
 

@@ -5,9 +5,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { CustomerResolver } from './customer/customer.resolver';
-import { CustomerService } from './customer/customer.service';
-import { InvoiceService } from './invoice/invoce.service';
 import { CustomerModule } from './customer/customer.module';
 import { InvoiceModule } from './invoice/invoice.module';
 
@@ -24,7 +21,7 @@ import { InvoiceModule } from './invoice/invoice.module';
       username: 'root',
       password: 'root',
       database: 'invoiceapp',
-      entities: ['src/**/*.model.js'],
+      entities: ['dist/**/*.model{.ts,.js}'],
       synchronize: true,
     }),
     CustomerModule,
