@@ -51,4 +51,24 @@ type Query {
 
 type Mutation {
   createCustomer(name: String!, email: String!, phone: String, address: String): CustomerModel!
+  createInvoice(invoice: CreateInvoiceDto!): InvoiceModel!
+}
+
+input CreateInvoiceDto {
+  customer: String!
+  invoiceNo: String!
+  paymentStatus: String!
+  description: String!
+  currency: String!
+  taxRate: Float!
+  issueDate: DateTime!
+  dueDate: DateTime!
+  note: String!
+  items: [ItemDto!]!
+}
+
+input ItemDto {
+  description: String!
+  rate: Float!
+  quantity: Float!
 }

@@ -24,11 +24,11 @@ export class CustomerResolver {
     return await this.customerService.findAll();
   }
 
-  // @ResolveField(returns => [InvoiceModel])
-  // async invoices(@Parent() customer): Promise<InvoiceModel[]> {
-  //   const { id } = customer;
-  //   return this.invoiceService.findByCustomerId(id);
-  // }
+  @ResolveField(returns => [InvoiceModel])
+  async invoices(@Parent() customer): Promise<InvoiceModel[]> {
+    const { id } = customer;
+    return this.invoiceService.findByCustomerId(id);
+  }
 
   @Mutation(returns => CustomerModel)
   async createCustomer (
