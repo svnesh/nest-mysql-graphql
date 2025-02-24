@@ -2,28 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Item {
-  description: String!
-  rate: Float!
-  quantity: Float!
-}
-
 type InvoiceModel {
   id: String!
   invoiceNo: String!
-  description: String!
-  customer: CustomerModel!
-  currency: String!
-  taxRate: Float!
-  issueDate: String!
-  dueDate: String!
-  note: String!
-  items: [Item!]!
-  taxAmount: Float!
-  subTotal: Float!
-  total: String!
-  amountPaid: Float!
-  outstandingBalance: Float!
+  amount: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -36,12 +18,9 @@ scalar DateTime
 type CustomerModel {
   id: String!
   name: String!
-  email: String!
-  phone: String!
-  address: String!
-  invoices: [InvoiceModel!]
   created_at: DateTime!
   updated_at: DateTime!
+  invoices: [InvoiceModel!]!
 }
 
 type Query {
@@ -50,25 +29,12 @@ type Query {
 }
 
 type Mutation {
-  createCustomer(name: String!, email: String!, phone: String, address: String): CustomerModel!
+  createCustomer(name: String!): CustomerModel!
   createInvoice(invoice: CreateInvoiceDto!): InvoiceModel!
 }
 
 input CreateInvoiceDto {
   customer: String!
   invoiceNo: String!
-  paymentStatus: String!
-  description: String!
-  currency: String!
-  taxRate: Float!
-  issueDate: DateTime!
-  dueDate: DateTime!
-  note: String!
-  items: [ItemDto!]!
-}
-
-input ItemDto {
-  description: String!
-  rate: Float!
-  quantity: Float!
+  amount: Float!
 }

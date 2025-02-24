@@ -33,11 +33,8 @@ export class CustomerResolver {
   @Mutation(returns => CustomerModel)
   async createCustomer (
     @Args('name') name: string,
-    @Args('email') email: string,
-    @Args('phone', {nullable: true}) phone: string,
-    @Args('address', {nullable: true}) address: string
   ): Promise<CustomerModel> {
-    return await this.customerService.create({ name, email, phone, address });
+    return await this.customerService.create({ name });
   }
 
 

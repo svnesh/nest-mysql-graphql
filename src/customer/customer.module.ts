@@ -3,15 +3,15 @@ import { CustomerService } from './customer.service';
 import { CustomerResolver } from './customer.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerModel } from './customer.model';
-import { InvoiceModule } from 'src/invoice/invoice.module';
+import { InvoiceService } from 'src/invoice/invoce.service';
+import { InvoiceModel } from 'src/invoice/invoice.model';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CustomerModel]),
-    InvoiceModule
+    TypeOrmModule.forFeature([CustomerModel, InvoiceModel]),
   ],
-  providers: [CustomerService, CustomerResolver],
+  providers: [CustomerService, CustomerResolver, InvoiceService],
 
 })
 
