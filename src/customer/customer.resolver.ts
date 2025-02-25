@@ -14,20 +14,19 @@ export class CustomerResolver {
     @Inject(InvoiceService) private invoiceService: InvoiceService,
   ) {}
 
-  @Query(returns => CustomerModel)
+  @Query(returns => CustomerModel, { nullable: true})
   async customer(@Args('id') id: string): Promise<CustomerModel> {
     return await this.customerService.findOneCustomer(id);
   }
 
-  @Query(returns => [CustomerModel])
+  @Query(returns => [CustomerModel], {nullable: true})
   async customers(): Promise<CustomerModel[]> {
     return await this.customerService.findAll();
   }
 
   @ResolveField(returns => [InvoiceModel])
   async invoices(@Parent() customer): Promise<InvoiceModel[]> {
-    const { id } = customer;
-    return this.invoiceService.findByCustomerId(id);
+    return customer.invoices;
   }
 
   @Mutation(returns => CustomerModel)
