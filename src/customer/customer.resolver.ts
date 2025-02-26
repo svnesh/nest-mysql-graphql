@@ -16,12 +16,12 @@ export class CustomerResolver {
 
   @Query(returns => CustomerModel, { nullable: true})
   async customer(@Args('id') id: string): Promise<CustomerModel> {
-    return await this.customerService.findOneCustomer(id);
+    return this.customerService.findOneCustomer(id);
   }
 
   @Query(returns => [CustomerModel], {nullable: true})
   async customers(): Promise<CustomerModel[]> {
-    return await this.customerService.findAll();
+    return this.customerService.findAll();
   }
 
   @ResolveField(returns => [InvoiceModel])
@@ -33,7 +33,7 @@ export class CustomerResolver {
   async createCustomer (
     @Args('name') name: string,
   ): Promise<CustomerModel> {
-    return await this.customerService.create({ name });
+    return this.customerService.create({ name });
   }
 
 

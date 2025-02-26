@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { InvoiceModel } from "src/invoice/invoice.model";
+import { ReviewModel } from "src/review/review.model";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
@@ -17,6 +18,9 @@ export class CustomerModel {
 
   @OneToMany(type => InvoiceModel, invoice => invoice.customer)
   invoices: InvoiceModel[];
+
+  @OneToMany(type => ReviewModel, (review) => review.customer)
+  reviews: ReviewModel[];
 
   @Field()
   @Column()

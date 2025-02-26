@@ -15,7 +15,7 @@ export class InvoiceResolver {
   async createInvoice (
     @Args('invoice') invoice: CreateInvoiceDto,
   ): Promise<InvoiceModel> {
-    return await this.invoiceService.createInvoice(invoice);
+    return this.invoiceService.createInvoice(invoice);
   }
 
 }

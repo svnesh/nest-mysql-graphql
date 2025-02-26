@@ -20,7 +20,7 @@ export class CustomerService {
   }
 
   async findAll(): Promise<CustomerModel[]> {
-    return this.customerRepository.find({relations: ['invoices']});
+    return this.customerRepository.find({relations: ['invoices', 'reviews']});
   }
 
   async findOneCustomer(id: any): Promise<CustomerModel> {

@@ -15,6 +15,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ReviewModel {
+  id: String!
+  rating: Float!
+  comment: String!
+}
+
 type CustomerModel {
   id: String!
   name: String!
@@ -26,15 +32,23 @@ type CustomerModel {
 type Query {
   customer(id: String!): CustomerModel
   customers: [CustomerModel!]
+  getReviews: [ReviewModel!]
 }
 
 type Mutation {
   createCustomer(name: String!): CustomerModel!
   createInvoice(invoice: CreateInvoiceDto!): InvoiceModel!
+  createReview(createReview: CreateReviewDto!): ReviewModel!
 }
 
 input CreateInvoiceDto {
   customer: String!
   invoiceNo: String!
   amount: Float!
+}
+
+input CreateReviewDto {
+  customer: String!
+  rating: Float!
+  comment: String!
 }
