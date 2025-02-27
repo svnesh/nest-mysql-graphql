@@ -15,11 +15,12 @@ export class ReviewService {
   ) {}
 
   async createReview(createReviewDto: any): Promise<ReviewModel> {
-    const customerExists = await this.customerService.findOneCustomer({where: {id: createReviewDto.customer}})
+    const customerExists = await this.customerService.findOneCustomer(createReviewDto.customer)
     if (!customerExists){
       throw new Error('Customer not found');
     }
-    return this.reviewRepository.save(createReviewDto);
+    const review = await this.reviewRepository.save(createReviewDto);
+    return review;
   }
 
   async findAll() {

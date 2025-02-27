@@ -4,6 +4,7 @@ import { Inject } from "@nestjs/common";
 import { CustomerService } from "./customer.service";
 import { InvoiceService } from "src/invoice/invoce.service";
 import { InvoiceModel } from "src/invoice/invoice.model";
+import { ReviewModel } from "src/review/review.model";
 
 
 @Resolver(of => CustomerModel)
@@ -15,7 +16,7 @@ export class CustomerResolver {
   ) {}
 
   @Query(returns => CustomerModel, { nullable: true})
-  async customer(@Args('id') id: string): Promise<CustomerModel> {
+  async customer(@Args('id') id: string): Promise<CustomerModel | ReviewModel> {
     return this.customerService.findOneCustomer(id);
   }
 
@@ -27,6 +28,11 @@ export class CustomerResolver {
   @ResolveField(returns => [InvoiceModel])
   async invoices(@Parent() customer): Promise<InvoiceModel[]> {
     return customer.invoices;
+  }
+
+  @ResolveField(returns => [ReviewModel])
+  async reviews(@Parent() customer): Promise<ReviewModel[]> {
+    return customer.reviews;
   }
 
   @Mutation(returns => CustomerModel)

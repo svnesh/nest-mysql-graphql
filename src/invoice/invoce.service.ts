@@ -14,7 +14,7 @@ export class InvoiceService {
   ) {}
 
   async createInvoice(invoiceDto: any): Promise<InvoiceModel>{
-    const customerExists = await this.customerService.findOneCustomer({where: {id: invoiceDto.customer}})
+    const customerExists = await this.customerService.findOneCustomer(invoiceDto.customer)
     if (!customerExists){
       throw new Error('Customer not found');
     }

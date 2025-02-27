@@ -27,6 +27,7 @@ type CustomerModel {
   created_at: DateTime!
   updated_at: DateTime!
   invoices: [InvoiceModel!]!
+  reviews: [ReviewModel!]!
 }
 
 type Query {

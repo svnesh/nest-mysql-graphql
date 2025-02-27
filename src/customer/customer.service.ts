@@ -28,7 +28,7 @@ export class CustomerService {
       where: {
         id: id
       },
-      relations: ['invoices']
+      relations: ['invoices', 'reviews']
     });
   }
 
