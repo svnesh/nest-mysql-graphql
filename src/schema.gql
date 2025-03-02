@@ -2,12 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type PaymentModel {
+  id: String!
+  amount: Float!
+  invoice: InvoiceModel!
+}
+
 type InvoiceModel {
   id: String!
   invoiceNo: String!
   amount: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
+  payments: PaymentModel!
 }
 
 """
@@ -40,6 +47,7 @@ type Mutation {
   createCustomer(name: String!): CustomerModel!
   createInvoice(invoice: CreateInvoiceDto!): InvoiceModel!
   createReview(createReview: CreateReviewDto!): ReviewModel!
+  createPayment(payment: CreatePaymentDto!): PaymentUnion!
 }
 
 input CreateInvoiceDto {
@@ -52,4 +60,39 @@ input CreateReviewDto {
   customer: String!
   rating: Float!
   comment: String!
+}
+
+union PaymentUnion = CreditCardPayment | PayPalPayment
+
+type CreditCardPayment implements PaymentMethod {
+  id: String!
+  amount: Float!
+  cardNumber: String!
+}
+
+interface PaymentMethod {
+  id: String!
+  amount: Float!
+}
+
+type PayPalPayment implements PaymentMethod {
+  id: String!
+  amount: Float!
+  paypalEmail: String!
+}
+
+input CreatePaymentDto {
+  invoice: String!
+  amount: String!
+  paymentType: String!
+  paymentDetail: CreditCardDto!
+}
+
+input CreditCardDto {
+  cardNumber: String!
+  amount: Float!
+}
+
+type Subscription {
+  paymentMade: PaymentUnion!
 }

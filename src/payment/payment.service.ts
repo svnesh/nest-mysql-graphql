@@ -20,7 +20,6 @@ export class PaymentService {
   ) {}
 
   async createPayment(createPaymentDto: CreatePaymentDto) {
-
     const createdInvoice = await this.invoiceRepository.findOne({ where: { id: createPaymentDto.invoice }})
     if (!createdInvoice){
       throw new Error('Invoice not found');
@@ -28,16 +27,13 @@ export class PaymentService {
 
     let payment;
     if (createPaymentDto.paymentType == 'CreditCard'){
-      // payment = await this.creditCardPaymentRepository.create({ amount: createPaymentDto.amount, cardNumber: createPaymentDto.paymentDetail})
-
+      payment = await this.creditCardPaymentRepository.create(createPaymentDto.paymentDetail);
     } else if (createPaymentDto.paymentType == 'PayPal') {
-
+      payment = await this.paypalPaymentRepository.create(createPaymentDto.paymentDetail);
     } else {
       throw new Error('Invalid payment')
     }
-
-
-    await this.paymentRepository.create()
+    return this.paymentRepository.save(payment);
   }
 
 }
