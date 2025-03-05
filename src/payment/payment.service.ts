@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePaymentDto } from './dto/create-payment.dto';
+import { CreatePaymentDto, CreditCardDto, PaypalDto } from './dto/create-payment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreditCardPayment, PaymentModel, PayPalPayment } from './payment.model';
+import { CreditCardPayment, PaymentUnion, PayPalPayment } from './payment.model';
 import { Repository } from 'typeorm';
 import { InvoiceModel } from 'src/invoice/invoice.model';
 
@@ -9,8 +9,6 @@ import { InvoiceModel } from 'src/invoice/invoice.model';
 export class PaymentService {
 
   constructor(
-    @InjectRepository(PaymentModel)
-    private paymentRepository: Repository<PaymentModel>,
     @InjectRepository(CreditCardPayment)
     private creditCardPaymentRepository: Repository<CreditCardPayment>,
     @InjectRepository(PayPalPayment)
@@ -19,21 +17,20 @@ export class PaymentService {
     private invoiceRepository: Repository<InvoiceModel>,
   ) {}
 
-  async createPayment(createPaymentDto: CreatePaymentDto) {
-    const createdInvoice = await this.invoiceRepository.findOne({ where: { id: createPaymentDto.invoice }})
+  async createPayment(invoiceId: string, amount: number, paymentType: string, paymentDetails: string): Promise<typeof PaymentUnion> {
+    const createdInvoice = await this.invoiceRepository.findOne({ where: { id: invoiceId }})
     if (!createdInvoice){
       throw new Error('Invoice not found');
     }
 
-    let payment;
-    if (createPaymentDto.paymentType == 'CreditCard'){
-      payment = await this.creditCardPaymentRepository.create(createPaymentDto.paymentDetail);
-    } else if (createPaymentDto.paymentType == 'PayPal') {
-      payment = await this.paypalPaymentRepository.create(createPaymentDto.paymentDetail);
+    if (paymentType == 'CreditCard'){
+      const creditCardpayment = this.creditCardPaymentRepository.create({ amount, cardNumber: paymentDetails, invoice: createdInvoice});
+      return await this.creditCardPaymentRepository.save(creditCardpayment);
+    } else if (paymentType == 'PayPal') {
+      let payPalpayment = this.paypalPaymentRepository.create({ amount, paypalEmail: paymentDetails, invoice: createdInvoice });
+      return await this.paypalPaymentRepository.save(payPalpayment);
     } else {
       throw new Error('Invalid payment')
     }
-    return this.paymentRepository.save(payment);
-  }
-
+  } 
 }

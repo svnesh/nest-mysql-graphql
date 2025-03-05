@@ -34,12 +34,12 @@ export class CreatePaymentDto {
   invoice: string;
 
   @Field()
-  amount: string;
+  amount: number;
 
   @Field()
   paymentType: string;
 
-  @Field(() => CreditCardDto || PaypalDto)
-  paymentDetail: Object;
+  @Field()
+  paymentDetail: string;
 
 }

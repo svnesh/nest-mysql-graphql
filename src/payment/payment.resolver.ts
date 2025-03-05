@@ -1,6 +1,6 @@
 import { Args, Mutation, Resolver, Subscription } from "@nestjs/graphql";
-import { PaymentModel, PaymentUnion } from "./payment.model";
-import { CreatePaymentDto } from "./dto/create-payment.dto";
+import { PaymentUnion } from "./payment.model";
+import { CreatePaymentDto, CreditCardDto, PaypalDto } from "./dto/create-payment.dto";
 import { PaymentService } from "./payment.service";
 import { PubSub } from "graphql-subscriptions"; 
 
@@ -15,10 +15,13 @@ export class PaymentResolver {
 
   @Mutation(() => PaymentUnion)
   async createPayment(
-    @Args('payment') payment: CreatePaymentDto,
+    @Args('invoiceId') invoiceId: string,
+    @Args('amount') amount: number,
+    @Args('paymentType') paymentType: string,
+    @Args('paymentDetails') paymentDetails: string,
   ): Promise<typeof PaymentUnion> {
     
-    const createdPayment = this.paymentService.createPayment(payment);
+    const createdPayment = this.paymentService.createPayment(invoiceId, amount, paymentType, paymentDetails);
     pubSub.publish('paymentMade', { paymentMade: createdPayment })
     return createdPayment;
 

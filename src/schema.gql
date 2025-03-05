@@ -47,7 +47,7 @@ type Mutation {
   createCustomer(name: String!): CustomerModel!
   createInvoice(invoice: CreateInvoiceDto!): InvoiceModel!
   createReview(createReview: CreateReviewDto!): ReviewModel!
-  createPayment(payment: CreatePaymentDto!): PaymentUnion!
+  createPayment(invoiceId: String!, amount: Float!, paymentType: String!, paymentDetails: String!): PaymentUnion!
 }
 
 input CreateInvoiceDto {
@@ -67,30 +67,21 @@ union PaymentUnion = CreditCardPayment | PayPalPayment
 type CreditCardPayment implements PaymentMethod {
   id: String!
   amount: Float!
+  invoice: InvoiceModel!
   cardNumber: String!
 }
 
 interface PaymentMethod {
   id: String!
   amount: Float!
+  invoice: InvoiceModel!
 }
 
 type PayPalPayment implements PaymentMethod {
   id: String!
   amount: Float!
+  invoice: InvoiceModel!
   paypalEmail: String!
-}
-
-input CreatePaymentDto {
-  invoice: String!
-  amount: String!
-  paymentType: String!
-  paymentDetail: CreditCardDto!
-}
-
-input CreditCardDto {
-  cardNumber: String!
-  amount: Float!
 }
 
 type Subscription {

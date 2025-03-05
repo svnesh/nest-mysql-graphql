@@ -12,6 +12,10 @@ abstract class PaymentMethod {
   @Field(() => Float)
   @Column()
   amount: number;
+
+  @Field(() => InvoiceModel)
+  @ManyToOne(() => InvoiceModel, (invoice) => invoice.payments)
+  invoice: InvoiceModel;
 }
 
 
@@ -45,19 +49,19 @@ export const PaymentUnion = createUnionType({
   }
 });
 
-@ObjectType()
-@Entity()
-export class PaymentModel {
+// @ObjectType()
+// @Entity()
+// export class PaymentModel {
 
-  @Field()
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+//   @Field()
+//   @PrimaryGeneratedColumn('uuid')
+//   id: string;
 
-  @Field(() => Float)
-  @Column()
-  amount: number;
+//   @Field(() => Float)
+//   @Column()
+//   amount: number;
 
-  @Field(() => InvoiceModel)
-  @ManyToOne(() => InvoiceModel, (invoice) => invoice.payments)
-  invoice: InvoiceModel;
-}
+//   @Field(() => InvoiceModel)
+//   @ManyToOne(() => InvoiceModel, (invoice) => invoice.payments)
+//   invoice: InvoiceModel;
+// }
