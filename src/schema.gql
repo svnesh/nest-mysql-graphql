@@ -2,25 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type PaymentModel {
-  id: String!
-  amount: Float!
-  invoice: InvoiceModel!
-}
-
 type InvoiceModel {
   id: String!
   invoiceNo: String!
   amount: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
-  payments: PaymentModel!
+  Payments: PaymentUnion!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+union PaymentUnion = CreditCardPayment | PayPalPayment
+
+type CreditCardPayment implements PaymentMethod {
+  id: String!
+  amount: Float!
+  invoice: InvoiceModel!
+  cardNumber: String!
+}
+
+interface PaymentMethod {
+  id: String!
+  amount: Float!
+  invoice: InvoiceModel!
+}
+
+type PayPalPayment implements PaymentMethod {
+  id: String!
+  amount: Float!
+  invoice: InvoiceModel!
+  paypalEmail: String!
+}
 
 type ReviewModel {
   id: String!
@@ -47,7 +63,7 @@ type Mutation {
   createCustomer(name: String!): CustomerModel!
   createInvoice(invoice: CreateInvoiceDto!): InvoiceModel!
   createReview(createReview: CreateReviewDto!): ReviewModel!
-  createPayment(invoiceId: String!, amount: Float!, paymentType: String!, paymentDetails: String!): PaymentUnion!
+  createPayment(payment: CreatePaymentDto!): PaymentUnion!
 }
 
 input CreateInvoiceDto {
@@ -62,26 +78,11 @@ input CreateReviewDto {
   comment: String!
 }
 
-union PaymentUnion = CreditCardPayment | PayPalPayment
-
-type CreditCardPayment implements PaymentMethod {
-  id: String!
+input CreatePaymentDto {
+  invoice: String!
   amount: Float!
-  invoice: InvoiceModel!
-  cardNumber: String!
-}
-
-interface PaymentMethod {
-  id: String!
-  amount: Float!
-  invoice: InvoiceModel!
-}
-
-type PayPalPayment implements PaymentMethod {
-  id: String!
-  amount: Float!
-  invoice: InvoiceModel!
-  paypalEmail: String!
+  paymentType: String!
+  paymentDetail: String!
 }
 
 type Subscription {

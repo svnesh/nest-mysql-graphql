@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { CustomerModel } from "src/customer/customer.model";
-import { PaymentModel } from "src/payment/payment.model";
+import { CreditCardPayment, PaymentUnion, PayPalPayment } from "src/payment/payment.model";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
@@ -33,7 +33,14 @@ export class InvoiceModel {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field(() => PaymentModel)
-  @OneToMany(() => PaymentModel, (payment) => payment.invoice)
-  payments: PaymentModel[];
+  @OneToMany(() => CreditCardPayment, (creditCardPayment) => creditCardPayment.invoice)
+  creditCardPayments: CreditCardPayment[];
+
+  @OneToMany(() => PayPalPayment, (payPalPayment) => payPalPayment.invoice)
+  payPalPayments: PayPalPayment[];
+
+  @Field(() => PaymentUnion)
+  get Payments(): Array<CreditCardPayment | PayPalPayment> {
+    return [...this.creditCardPayments, ...this.payPalPayments]
+  }
 }

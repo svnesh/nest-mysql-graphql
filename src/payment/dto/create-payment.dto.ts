@@ -1,29 +1,40 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsNotEmpty } from "class-validator";
 
-@InputType()
-export class CreditCardDto {
+// @InputType()
+// export class CreditCardPaymentDto {
   
-  @Field()
-  @IsNotEmpty()
-  cardNumber: string
+//   @Field()
+//   @IsNotEmpty()
+//   cardNumber: string
 
-  @Field()
-  @IsNotEmpty()
-  amount: number;
-}
+//   @Field()
+//   @IsNotEmpty()
+//   amount: number;
 
-@InputType()
-export class PaypalDto {
+//   @Field()
+//   @IsNotEmpty()
+//   invoice: string;
+
   
-  @Field()
-  @IsNotEmpty()
-  paypalEmail: string
+// }
 
-  @Field()
-  @IsNotEmpty()
-  amount: number;
-}
+// @InputType()
+// export class PaypalPaymentDto {
+  
+//   @Field()
+//   @IsNotEmpty()
+//   paypalEmail: string
+
+//   @Field()
+//   @IsNotEmpty()
+//   amount: number;
+
+//   @Field()
+//   @IsNotEmpty()
+//   invoice: string;
+
+// }
 
 
 @InputType()

@@ -14,7 +14,7 @@ abstract class PaymentMethod {
   amount: number;
 
   @Field(() => InvoiceModel)
-  @ManyToOne(() => InvoiceModel, (invoice) => invoice.payments)
+  @ManyToOne(() => InvoiceModel, (invoice) => invoice.Payments)
   invoice: InvoiceModel;
 }
 
