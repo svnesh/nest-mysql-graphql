@@ -22,9 +22,9 @@ export class PaymentResolver {
 
   }
 
-  @Subscription(() => PaymentUnion)
-  paymentMade() {
-    return pubSub.asyncIterableIterator('paymentMade');
-  }
+  // @Subscription(() => PaymentUnion)
+  // paymentMade() {
+  //   return pubSub.asyncIterableIterator('paymentMade');
+  // }
 
 }

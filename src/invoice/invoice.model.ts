@@ -39,7 +39,7 @@ export class InvoiceModel {
   @OneToMany(() => PayPalPayment, (payPalPayment) => payPalPayment.invoice)
   payPalPayments: PayPalPayment[];
 
-  @Field(() => PaymentUnion)
+  @Field(() => [PaymentUnion])
   get Payments(): Array<CreditCardPayment | PayPalPayment> {
     return [...this.creditCardPayments, ...this.payPalPayments]
   }

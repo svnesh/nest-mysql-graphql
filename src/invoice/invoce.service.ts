@@ -24,5 +24,12 @@ export class InvoiceService {
   async findByCustomerId(id: any) {
     return this.invoiceRepository.findBy({customer: id})
   }
+
+  async findOne(id: string): Promise<InvoiceModel> {
+    return this.invoiceRepository.findOne({
+      where: { id },
+      relations: ['creditCardPayments', 'payPalPayments']
+    })
+  }
   
 }

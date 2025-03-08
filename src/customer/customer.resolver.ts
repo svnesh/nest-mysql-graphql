@@ -44,3 +44,36 @@ export class CustomerResolver {
 
 
 }
+
+
+// Get customer detail
+// query{
+//   customer(id: "13a0c826-e000-4bd3-8c81-e9b2b0af2cd2"){
+//     id
+//     name
+//     invoices{
+//       id
+//     }
+//   }
+// }
+
+// Get all customers
+// query{
+//   customers{
+//     id,
+//     name,
+//     reivews{
+//       id
+//       rating
+//       comment
+//     }
+//   }
+// }
+
+// Create customer
+// mutation{
+//   createCustomer(name: "User Test3"){
+//     id,
+//     name
+//   }
+// }

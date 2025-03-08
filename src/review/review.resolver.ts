@@ -23,3 +23,13 @@ export class ReviewResolver {
   }
 
 }
+
+
+// Create review
+// mutation{
+//   createReview(createReview: {customer: "13a0c826-e000-4bd3-8c81-e9b2b0af2cd2", rating: 1, comment: "very bad" }){
+//     id
+//     rating
+//     comment
+//   }
+// }

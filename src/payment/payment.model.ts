@@ -37,7 +37,7 @@ export class PayPalPayment extends PaymentMethod {
 
 export const PaymentUnion = createUnionType({
   name: 'PaymentUnion',
-  types: () => [CreditCardPayment, PayPalPayment],
+  types: () => [CreditCardPayment, PayPalPayment] as const,
   resolveType(value) {
     if ('cardNumber' in value) {
       return CreditCardPayment;

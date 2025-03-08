@@ -8,7 +8,7 @@ type InvoiceModel {
   amount: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
-  Payments: PaymentUnion!
+  Payments: [PaymentUnion!]!
 }
 
 """
@@ -56,6 +56,7 @@ type CustomerModel {
 type Query {
   customer(id: String!): CustomerModel
   customers: [CustomerModel!]
+  getInvoice(id: String!): InvoiceModel!
   getReviews: [ReviewModel!]
 }
 
