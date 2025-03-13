@@ -53,10 +53,26 @@ type CustomerModel {
   reviews: [ReviewModel!]!
 }
 
+type InvoiceEdge {
+  cursor: String!
+  node: InvoiceModel!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type PaginatedInvoices {
+  edges: [InvoiceEdge!]!
+  pageInfo: PageInfo!
+}
+
 type Query {
   customer(id: String!): CustomerModel
   customers: [CustomerModel!]
   getInvoice(id: String!): InvoiceModel!
+  getPaginatedInvoice(first: Float = 10, after: String): PaginatedInvoices!
   getReviews: [ReviewModel!]
 }
 

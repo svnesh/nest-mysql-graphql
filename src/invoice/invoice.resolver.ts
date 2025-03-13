@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { InvoiceModel } from "./invoice.model";
 import { CreateInvoiceDto } from "./dto/invoice.dto";
 import { InvoiceService } from "./invoce.service";
+import { PaginatedInvoices } from "./invoice.pagination.model";
 
 
 @Resolver(of => InvoiceModel)
@@ -23,6 +24,14 @@ export class InvoiceResolver {
     @Args('id') id: string): Promise<InvoiceModel> {
       return this.invoiceService.findOne(id);
     }
+
+  @Query(() => PaginatedInvoices, { name: 'getPaginatedInvoice'} )
+  async getPaginatedInvoice(
+    @Args('first', { type: () => Number, nullable: true, defaultValue: 10 }) first: number,
+    @Args('after', { type: () => String, nullable: true }) after?: string,
+  ): Promise<PaginatedInvoices> {
+    return this.invoiceService.getPaginatedInvoice(first, after);
+  }
 
 }
 
@@ -50,6 +59,23 @@ export class InvoiceResolver {
 //         amount
 //         paypalEmail
 //       }
+//     }
+//   }
+// }
+
+// Get paginated Invoice
+// query {
+//   getPaginatedInvoice(first: 2, after: "60d00c09-ce85-4e2b-8a6b-c86f4f878482") {
+//     edges {
+//       cursor
+//       node {
+//         id
+//         amount
+//       }
+//     }
+//     pageInfo {
+//       hasNextPage
+//       endCursor
 //     }
 //   }
 // }

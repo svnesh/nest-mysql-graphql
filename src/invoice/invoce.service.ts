@@ -3,6 +3,7 @@ import { InvoiceModel } from "./invoice.model";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable } from "@nestjs/common";
 import { CustomerService } from "src/customer/customer.service";
+import { InvoiceEdge, PageInfo, PaginatedInvoices } from "./invoice.pagination.model";
 
 @Injectable()
 export class InvoiceService {
@@ -30,6 +31,33 @@ export class InvoiceService {
       where: { id },
       relations: ['creditCardPayments', 'payPalPayments']
     })
+  }
+
+  async getPaginatedInvoice(first: number, after?: string): Promise<PaginatedInvoices> {
+
+    const query = await this.invoiceRepository.createQueryBuilder('invoice')
+      .orderBy('invoice.id', 'ASC')
+      .take(first + 1);  //taking 1 extra to check next
+
+    if (after){
+      query.andWhere('invoice.id > :cursor', { cursor: after })
+    }
+
+    const invoices = await query.getMany();
+    const hasNextPage = invoices.length > first;
+    if (hasNextPage) invoices.pop();
+
+    const edges: InvoiceEdge[] = invoices.map((invoice) => ({
+      cursor: invoice.id.toString(),
+      node: invoice
+    }));
+
+    const pageInfo: PageInfo = {
+      hasNextPage,
+      endCursor: hasNextPage ? invoices[invoices.length -1].id.toString() : null
+    }
+
+    return {edges, pageInfo };
   }
   
 }
