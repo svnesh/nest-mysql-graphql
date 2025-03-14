@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreditCardPayment, PaymentUnion, PayPalPayment } from './payment.model';
 import { Repository } from 'typeorm';
 import { InvoiceModel } from 'src/invoice/invoice.model';
+import { PageInfo, PaginatedPayments, PaymentEdge } from './payment.pagination.model';
 
 @Injectable()
 export class PaymentService {
@@ -32,5 +33,51 @@ export class PaymentService {
     } else {
       throw new Error('Invalid payment')
     }
-  } 
+  }
+  
+  async getPaginatedPayments(first: number, after?: string): Promise<PaginatedPayments> {
+
+    const creditcardQuery = await this.creditCardPaymentRepository.createQueryBuilder('credit_card_payment')
+      .orderBy('credit_card_payment.id', 'ASC');
+
+    const paypalQuery = await this.paypalPaymentRepository.createQueryBuilder('pay_pal_payment')
+      .orderBy('pay_pal_payment.id', 'ASC');
+
+    if (after) {
+      creditcardQuery.andWhere('credit_card_payment.id > :cursor', {cursor: after })
+      paypalQuery.andWhere('pay_pal_payment.id > :cursor', {cursor: after })
+    }
+    
+    const ccQuery = await creditcardQuery.getMany();
+    const ppQuery = await paypalQuery.getMany();
+
+    const allPayments = [...ccQuery, ...ppQuery];
+
+    const sortedPayments = allPayments.sort((a,b) => {
+      const date_a = new Date(a.createdAt);
+      const date_b = new Date(b.createdAt);
+      if (date_a < date_b){
+        return -1;
+      }
+      if(date_a > date_b){
+        return 1;
+      }
+      return 0;
+    });
+    
+    const hasNextPage = sortedPayments.length > first;
+    if (hasNextPage) sortedPayments.pop();
+
+    const edges: PaymentEdge[] = sortedPayments.map((payment) => ({
+      cursor: payment.id.toString(),
+      node: payment
+    }));
+
+    const pageInfo: PageInfo = {
+      hasNextPage,
+      endCursor: hasNextPage ? sortedPayments[sortedPayments.length - 1].id.toString() : null
+    }
+
+    return { edges, pageInfo}
+  }
 }

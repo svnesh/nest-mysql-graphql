@@ -1,6 +1,6 @@
 import { createUnionType, Field, Float, InterfaceType, ObjectType } from "@nestjs/graphql";
 import { InvoiceModel } from "src/invoice/invoice.model";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 @InterfaceType()
@@ -12,6 +12,16 @@ abstract class PaymentMethod {
   @Field(() => Float)
   @Column()
   amount: number;
+
+  @Field()
+  @Column()
+  @CreateDateColumn()
+  createdAt: Date;
+  
+  @Field()
+  @Column()
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @Field(() => InvoiceModel)
   @ManyToOne(() => InvoiceModel, (invoice) => invoice.Payments)
