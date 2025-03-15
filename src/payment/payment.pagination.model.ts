@@ -15,7 +15,7 @@ export class PaymentEdge {
 }
 
 @ObjectType()
-export class PageInfo {
+export class PaymentPageInfo {
 
   @Field()
   hasNextPage: boolean;
@@ -29,6 +29,6 @@ export class PaginatedPayments {
   @Field(() => [PaymentEdge])
   edges: PaymentEdge[];
 
-  @Field(() => PageInfo)
-  pageInfo: PageInfo;
+  @Field(() => PaymentPageInfo)
+  paymentPageInfo: PaymentPageInfo;
 }

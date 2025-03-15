@@ -34,29 +34,36 @@ export class InvoiceService {
   }
 
   async getPaginatedInvoice(first: number, after?: string): Promise<PaginatedInvoices> {
-
-    const query = await this.invoiceRepository.createQueryBuilder('invoice')
-      .orderBy('invoice.id', 'ASC')
-      .take(first + 1);  //taking 1 extra to check next
-
+    let cursorIdx = -1, invoices = [];
+    
     if (after){
-      query.andWhere('invoice.id > :cursor', { cursor: after })
+      const queryAfter = this.invoiceRepository.createQueryBuilder('invoice');
+      invoices = await queryAfter.select('invoice.id').orderBy('invoice.id', 'ASC').getMany();
+      invoices.sort((a,b) => a.id.localeCompare(b.id));
+      cursorIdx = invoices.findIndex(invoice => invoice.id === after);
     }
+    const query = this.invoiceRepository.createQueryBuilder('invoice');
+    if (cursorIdx !== -1){
+      query.andWhere('invoice.id > :cursor', { cursor: invoices[cursorIdx].id })
+    }
+    
+    const paginatedInvoices = await query
+      .orderBy('invoice.id')
+      .take(first)
+      .getMany()
 
-    const invoices = await query.getMany();
-    const hasNextPage = invoices.length > first;
-    if (hasNextPage) invoices.pop();
-
-    const edges: InvoiceEdge[] = invoices.map((invoice) => ({
-      cursor: invoice.id.toString(),
+    const hasNextPage = paginatedInvoices.length === first;
+    const endCursor = hasNextPage ? paginatedInvoices[paginatedInvoices.length - 1].id : null;
+   
+    const edges: InvoiceEdge[] = paginatedInvoices.map((invoice) => ({
+      cursor: invoice.id,
       node: invoice
     }));
 
     const pageInfo: PageInfo = {
       hasNextPage,
-      endCursor: hasNextPage ? invoices[invoices.length -1].id.toString() : null
+      endCursor: endCursor
     }
-
     return {edges, pageInfo };
   }
   

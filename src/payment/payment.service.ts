@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreditCardPayment, PaymentUnion, PayPalPayment } from './payment.model';
 import { Repository } from 'typeorm';
 import { InvoiceModel } from 'src/invoice/invoice.model';
-import { PageInfo, PaginatedPayments, PaymentEdge } from './payment.pagination.model';
+import { PaginatedPayments, PaymentEdge, PaymentPageInfo } from './payment.pagination.model';
 
 @Injectable()
 export class PaymentService {
@@ -43,41 +43,35 @@ export class PaymentService {
     const paypalQuery = await this.paypalPaymentRepository.createQueryBuilder('pay_pal_payment')
       .orderBy('pay_pal_payment.id', 'ASC');
 
-    if (after) {
-      creditcardQuery.andWhere('credit_card_payment.id > :cursor', {cursor: after })
-      paypalQuery.andWhere('pay_pal_payment.id > :cursor', {cursor: after })
-    }
-    
+      
     const ccQuery = await creditcardQuery.getMany();
     const ppQuery = await paypalQuery.getMany();
-
-    const allPayments = [...ccQuery, ...ppQuery];
-
-    const sortedPayments = allPayments.sort((a,b) => {
-      const date_a = new Date(a.createdAt);
-      const date_b = new Date(b.createdAt);
-      if (date_a < date_b){
-        return -1;
-      }
-      if(date_a > date_b){
-        return 1;
-      }
-      return 0;
-    });
     
-    const hasNextPage = sortedPayments.length > first;
-    if (hasNextPage) sortedPayments.pop();
+    let allPayments = [...ccQuery, ...ppQuery];
+      
+    allPayments = allPayments.sort((a,b) => a.id.localeCompare(b.id));
 
-    const edges: PaymentEdge[] = sortedPayments.map((payment) => ({
-      cursor: payment.id.toString(),
-      node: payment
-    }));
-
-    const pageInfo: PageInfo = {
-      hasNextPage,
-      endCursor: hasNextPage ? sortedPayments[sortedPayments.length - 1].id.toString() : null
+    let startIndex = 0;
+    if(after){
+      const cursorIndex = allPayments.findIndex(payment => payment.id === after);
+      if (cursorIndex !== -1){
+        startIndex = cursorIndex + 1;
+      }
     }
 
-    return { edges, pageInfo}
+    const paginatedPayments = allPayments.slice(startIndex, startIndex + first);
+    const hasNextPage = allPayments.length > startIndex + first;
+
+    const edges: PaymentEdge[] = paginatedPayments.map(payment => ({
+      cursor: payment.id,
+      node: payment
+    }))
+
+    const paymentPageInfo: PaymentPageInfo = {
+      hasNextPage,
+      endCursor: hasNextPage ? paginatedPayments[paginatedPayments.length - 1].id : null,
+    };    
+    
+    return { edges, paymentPageInfo }
   }
 }

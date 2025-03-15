@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { InvoiceModel } from "./invoice.model";
 import { CreateInvoiceDto } from "./dto/invoice.dto";
-import { InvoiceService } from "./invoce.service";
+import { InvoiceService } from "./invoice.service";
 import { PaginatedInvoices } from "./invoice.pagination.model";
 
 

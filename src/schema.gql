@@ -21,6 +21,8 @@ union PaymentUnion = CreditCardPayment | PayPalPayment
 type CreditCardPayment implements PaymentMethod {
   id: String!
   amount: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   invoice: InvoiceModel!
   cardNumber: String!
 }
@@ -28,12 +30,16 @@ type CreditCardPayment implements PaymentMethod {
 interface PaymentMethod {
   id: String!
   amount: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   invoice: InvoiceModel!
 }
 
 type PayPalPayment implements PaymentMethod {
   id: String!
   amount: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   invoice: InvoiceModel!
   paypalEmail: String!
 }
@@ -68,12 +74,28 @@ type PaginatedInvoices {
   pageInfo: PageInfo!
 }
 
+type PaymentEdge {
+  cursor: String!
+  node: PaymentUnion!
+}
+
+type PaymentPageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type PaginatedPayments {
+  edges: [PaymentEdge!]!
+  paymentPageInfo: PaymentPageInfo!
+}
+
 type Query {
   customer(id: String!): CustomerModel
   customers: [CustomerModel!]
   getInvoice(id: String!): InvoiceModel!
   getPaginatedInvoice(first: Float = 10, after: String): PaginatedInvoices!
   getReviews: [ReviewModel!]
+  getPaginatedPayments(first: Float = 10, after: String): PaginatedPayments!
 }
 
 type Mutation {

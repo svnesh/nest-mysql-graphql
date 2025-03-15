@@ -2,7 +2,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/g
 import { CustomerModel } from "./customer.model";
 import { Inject } from "@nestjs/common";
 import { CustomerService } from "./customer.service";
-import { InvoiceService } from "src/invoice/invoce.service";
+import { InvoiceService } from "src/invoice/invoice.service";
 import { InvoiceModel } from "src/invoice/invoice.model";
 import { ReviewModel } from "src/review/review.model";
 
