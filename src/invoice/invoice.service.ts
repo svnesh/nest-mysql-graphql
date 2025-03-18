@@ -33,7 +33,15 @@ export class InvoiceService {
     })
   }
 
-  async getPaginatedInvoice(first: number, after?: string): Promise<PaginatedInvoices> {
+  async getPaginatedInvoice(
+    first: number, 
+    after?: string,
+    customerId?: string,
+    minAmount?: number,
+    maxAmount?: number,
+    fromDate?: string,
+    toDate?: string,
+  ): Promise<PaginatedInvoices> {
     let cursorIdx = -1, invoices = [];
     
     if (after){
@@ -45,6 +53,27 @@ export class InvoiceService {
     const query = this.invoiceRepository.createQueryBuilder('invoice');
     if (cursorIdx !== -1){
       query.andWhere('invoice.id > :cursor', { cursor: invoices[cursorIdx].id })
+    }
+
+    //Filtering by customer
+    if (customerId){
+      query.andWhere('invoice.customer = :customerId', { customerId });
+    }
+
+    //Filtering by min & max amount
+    if (minAmount != undefined) {
+      query.andWhere('invoice.amount >= :minAmount', { minAmount });
+    }
+    if (maxAmount != undefined){
+      query.andWhere('invoice.amount <= :maxAmount', { maxAmount });
+    }
+
+    //Filtering by from Date & to Date
+    if (fromDate != undefined) {
+      query.andWhere('invoice.createdAt >= :fromDate', { fromDate });
+    }
+    if (toDate != undefined){
+      query.andWhere('invoice.createdAt <= :toDate', { toDate });
     }
     
     const paginatedInvoices = await query

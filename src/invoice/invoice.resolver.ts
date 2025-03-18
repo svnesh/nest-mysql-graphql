@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Float, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { InvoiceModel } from "./invoice.model";
 import { CreateInvoiceDto } from "./dto/invoice.dto";
 import { InvoiceService } from "./invoice.service";
@@ -29,8 +29,13 @@ export class InvoiceResolver {
   async getPaginatedInvoice(
     @Args('first', { type: () => Number, nullable: true, defaultValue: 10 }) first: number,
     @Args('after', { type: () => String, nullable: true }) after?: string,
+    @Args('customerId', { type: () => String, nullable: true }) customerId?: string,
+    @Args('minAmount', { type: () => Float, nullable: true }) minAmount?: number,
+    @Args('maxAmount', { type: () => Float, nullable: true }) maxAmount?: number,
+    @Args('fromDate', { type: () => String, nullable: true }) fromDate?: string,
+    @Args('toDate', { type: () => String, nullable: true }) toDate?: string,
   ): Promise<PaginatedInvoices> {
-    return this.invoiceService.getPaginatedInvoice(first, after);
+    return this.invoiceService.getPaginatedInvoice(first, after, customerId, minAmount, maxAmount, fromDate, toDate);
   }
 
 }
