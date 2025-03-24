@@ -41,6 +41,8 @@ export class InvoiceService {
     maxAmount?: number,
     fromDate?: string,
     toDate?: string,
+    sortBy?: 'createdAt' | 'amount',
+    sortOrder?: 'ASC' | 'DESC'
   ): Promise<PaginatedInvoices> {
     let cursorIdx = -1, invoices = [];
     
@@ -74,6 +76,13 @@ export class InvoiceService {
     }
     if (toDate != undefined){
       query.andWhere('invoice.createdAt <= :toDate', { toDate });
+    }
+
+    //sorting logic
+    if (sortBy){
+      query.orderBy(`invoice.${sortBy}`, sortOrder ?? 'ASC')
+    } else {
+      query.orderBy(`invoice.id`, 'ASC');
     }
     
     const paginatedInvoices = await query

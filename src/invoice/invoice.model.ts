@@ -20,7 +20,7 @@ export class InvoiceModel {
   customer: CustomerModel;
 
   @Field()
-  @Column()
+  @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
 
   @Field()

@@ -34,8 +34,10 @@ export class InvoiceResolver {
     @Args('maxAmount', { type: () => Float, nullable: true }) maxAmount?: number,
     @Args('fromDate', { type: () => String, nullable: true }) fromDate?: string,
     @Args('toDate', { type: () => String, nullable: true }) toDate?: string,
+    @Args('sortBy', { type: () => String, nullable: true }) sortBy?: 'createdAt' | 'amount',
+    @Args('sortOrder', { type: () => String, nullable: true }) sortOrder?: 'ASC' | 'DESC',
   ): Promise<PaginatedInvoices> {
-    return this.invoiceService.getPaginatedInvoice(first, after, customerId, minAmount, maxAmount, fromDate, toDate);
+    return this.invoiceService.getPaginatedInvoice(first, after, customerId, minAmount, maxAmount, fromDate, toDate, sortBy, sortOrder);
   }
 
 }

@@ -1,4 +1,5 @@
 import { Field, InputType } from "@nestjs/graphql";
+import { IsNumber } from "class-validator";
 
 @InputType()
 export class CreateInvoiceDto {
@@ -9,5 +10,6 @@ export class CreateInvoiceDto {
   invoiceNo: string;
 
   @Field()
+  @IsNumber()
   amount: number
 }
