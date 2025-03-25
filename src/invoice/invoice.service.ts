@@ -84,9 +84,8 @@ export class InvoiceService {
     } else {
       query.orderBy(`invoice.id`, 'ASC');
     }
-    
+
     const paginatedInvoices = await query
-      .orderBy('invoice.id')
       .take(first)
       .getMany()
 
@@ -106,3 +105,27 @@ export class InvoiceService {
   }
   
 }
+
+
+//paginated invoice with sorting
+// query {
+//   getPaginatedInvoice(
+//     first: 10, 
+//     customerId: "13a0c826-e000-4bd3-8c81-e9b2b0af2cd2",
+//     minAmount: 100,
+//     sortBy: "amount",
+//     sortOrder: "DESC"
+//   ) {
+//     edges {
+//       cursor
+//       node {
+//         id
+//         amount
+//       }
+//     }
+//     pageInfo {
+//       hasNextPage
+//       endCursor
+//     }
+//   }
+// }
