@@ -5,6 +5,7 @@
 type InvoiceModel {
   id: String!
   invoiceNo: String!
+  customer: CustomerModel!
   amount: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -93,7 +94,7 @@ type Query {
   customer(id: String!): CustomerModel
   customers: [CustomerModel!]
   getInvoice(id: String!): InvoiceModel!
-  getPaginatedInvoice(first: Float = 10, after: String, customerId: String, minAmount: Float, maxAmount: Float, fromDate: String, toDate: String, sortBy: String, sortOrder: String): PaginatedInvoices!
+  getPaginatedInvoice(first: Float = 10, after: String, customerId: String, minAmount: Float, maxAmount: Float, fromDate: String, toDate: String, sortBy: String, sortOrder: String, searchTerm: String, paymentMethod: String): PaginatedInvoices!
   getReviews: [ReviewModel!]
   getPaginatedPayments(first: Float = 10, after: String): PaginatedPayments!
 }

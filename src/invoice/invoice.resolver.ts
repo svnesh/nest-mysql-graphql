@@ -1,8 +1,9 @@
-import { Args, Float, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Float, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { InvoiceModel } from "./invoice.model";
 import { CreateInvoiceDto } from "./dto/invoice.dto";
 import { InvoiceService } from "./invoice.service";
 import { PaginatedInvoices } from "./invoice.pagination.model";
+import { CreditCardPayment, PaymentUnion, PayPalPayment } from "src/payment/payment.model";
 
 
 @Resolver(of => InvoiceModel)
@@ -36,8 +37,15 @@ export class InvoiceResolver {
     @Args('toDate', { type: () => String, nullable: true }) toDate?: string,
     @Args('sortBy', { type: () => String, nullable: true }) sortBy?: 'createdAt' | 'amount',
     @Args('sortOrder', { type: () => String, nullable: true }) sortOrder?: 'ASC' | 'DESC',
+    @Args('searchTerm', { type: () => String, nullable: true }) searchTerm?: string,
+    @Args('paymentMethod', { type: () => String, nullable: true }) paymentMethod?: 'CreditCard' | 'PayPal',
   ): Promise<PaginatedInvoices> {
-    return this.invoiceService.getPaginatedInvoice(first, after, customerId, minAmount, maxAmount, fromDate, toDate, sortBy, sortOrder);
+    return this.invoiceService.getPaginatedInvoice(first, after, customerId, minAmount, maxAmount, fromDate, toDate, sortBy, sortOrder, searchTerm, paymentMethod);
+  }
+
+  @ResolveField(() => [PaymentUnion])
+  async Payments(@Parent() invoice: InvoiceModel): Promise<Array<CreditCardPayment | PayPalPayment>> {
+    return [...(invoice.creditCardPayments || []), ...(invoice.payPalPayments || [])];
   }
 
 }

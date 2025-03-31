@@ -16,7 +16,8 @@ export class InvoiceModel {
   @Column({ length: 500, nullable: false })
   invoiceNo: string;
 
-  @ManyToOne(type => CustomerModel, customer => customer.invoices)
+  @Field(() => CustomerModel)
+  @ManyToOne(type => CustomerModel, customer => customer.invoices, { eager: true })
   customer: CustomerModel;
 
   @Field()
@@ -39,8 +40,4 @@ export class InvoiceModel {
   @OneToMany(() => PayPalPayment, (payPalPayment) => payPalPayment.invoice)
   payPalPayments: PayPalPayment[];
 
-  @Field(() => [PaymentUnion])
-  get Payments(): Array<CreditCardPayment | PayPalPayment> {
-    return [...this.creditCardPayments, ...this.payPalPayments]
-  }
 }
